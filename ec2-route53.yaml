@@ -1,0 +1,19 @@
+---
+- name: ec2 and route 53
+  hosts: local
+  connection: local
+  become: yes
+  vars:
+    instances:
+      - mongodb
+  tasks:
+    - name: ec2 and rt53
+      amazon.aws.ec2_instance:
+        name: "{{ item }}"
+        instance_type: t3.micro
+        security_group: sg-084ef175a8b117541
+        image_id: ami-09c813fb71547fc4f
+        tags:
+          Environment: {{ item }}
+      register: ec2_output
+      loop: {{ instances }}
