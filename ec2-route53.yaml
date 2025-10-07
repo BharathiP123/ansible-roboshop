@@ -3,16 +3,18 @@
   connection: local
   become: yes
   vars:
+    ami_id: ami-09c813fb71547fc4f
+    sg: sg-084ef175a8b117541
     instances:
-      - mongodb
+    - mongodb
   tasks:
     - name: ec2 and rt53
       amazon.aws.ec2_instance:
         name: "{{ item }}"
         instance_type: t3.micro
-        security_group: sg-084ef175a8b117541
-        image_id: ami-09c813fb71547fc4f
+        security_group: "{{ sg }}"
+        image_id: "{{ ami_id }}"
         tags:
-          Environment: {{ item }}
+          Name: "{{ item }}"
       register: ec2_output
-      loop: {{ instances }}
+      loop: "{{ instances }}"
