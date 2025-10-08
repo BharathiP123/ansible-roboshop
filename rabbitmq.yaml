@@ -5,7 +5,7 @@
   vars: 
   tasks:
  
-  - name: copy mongorepo
+  - name: copy rabbitmq repo
     ansible.builtin.copy:
       src: rabbitmq.repo
       dest: /etc/yum.repos.d/rabbitmq.repo
@@ -16,11 +16,15 @@
       state: present
 
   - name: creating the user
-    ansible.builtin.command: rabbitmqctl add_user roboshop roboshop123
-
-  - name: changing the set_permissions
-    ansible.builtin.command: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
-
+    community.rabbitmq.rabbitmq_user:
+      user: roboshop 
+      password: roboshop123
+      permissions:
+      - vhost: "/"              # Virtual host
+        configure_priv: ".*"    # Configure permissions
+        read_priv: ".*"         # Read permissions
+        write_priv: ".*"        # Write permissions
+      state: present
 
   - name: start the rabbitmq
     ansible.builtin.service:
