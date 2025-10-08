@@ -4,7 +4,10 @@
   become: yes
   tasks: 
   - name: disable and enable the redis
-    ansible.builtin.command: dnf module disable redis -y && dnf module enable redis:7 -y
+    ansible.builtin.command: dnf module disable redis -y 
+    
+  - name: enable the redis
+    ansible.builtin.dnf: dnf module enable redis:7 -y
 
   - name: redis install
     ansible.builtin.package:
