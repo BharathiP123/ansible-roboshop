@@ -22,24 +22,24 @@
     register: ec2_output
     loop: "{{ instances }}"
   
-  - name: print ec2_output
-    ansible.builtin.debug:
-      msg: "{{ ec2_output }}"
+  # - name: print ec2_output
+  #   ansible.builtin.debug:
+  #     msg: "{{ ec2_output }}"
 
-  - name: print public_ip
-    ansible.builtin.debug: 
-      msg: "{{ item.instances[0].public_ip_address }}"
-    loop: "{{ ec2_output.results }}"
-    register: pub_output
+  # - name: print public_ip
+  #   ansible.builtin.debug: 
+  #     msg: "{{ item.instances[0].public_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
+  #   register: pub_output
       
-  - name: print pub_output
-    ansible.builtin.debug:
-      msg: " publicip: {{ pub_output }}"
+  # - name: print pub_output
+  #   ansible.builtin.debug:
+  #     msg: " publicip: {{ pub_output }}"
 
-  - name: print ip address
-    ansible.builtin.debug: 
-      msg: "{{ item.instances[0].private_ip_address }}"
-    loop: "{{ ec2_output.results }}"
+  # - name: print ip address
+  #   ansible.builtin.debug: 
+  #     msg: "{{ item.instances[0].private_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
 
   - name: route 53 record creation
     amazon.aws.route53:
@@ -53,21 +53,47 @@
     register: record_output
     loop: "{{ ec2_output.results }}"
 
-  - name: route 53 record creation for front end
-    amazon.aws.route53:
-      state: present
-      zone: "{{ hosted_zone }}"
-      record: "{{ item.item }}.{{ domain_name }}"
-      type: A
-      value: "{{ item.instances[0].public_ip_address }}"
-      ttl: 1
-      overwrite: true
-    register: record_output
-    loop: "{{ ec2_output.results }}"
+  # - name: route 53 record creation for front end
+  #   amazon.aws.route53:
+  #     state: present
+  #     zone: "{{ hosted_zone }}"
+  #     record: "{{ item.item }}.{{ domain_name }}"
+  #     type: A
+  #     value: "{{ item.instances[0].public_ip_address }}"
+  #     ttl: 1
+  #     overwrite: true
+  #   register: record_output
+  #   when: item.item == 'frontend'
+  #   loop: "{{ ec2_output.results }}"
 
-  - name: print record_output
-    ansible.builtin.debug:
-      msg: "{{ record_output }}"
+  # # - name: print record_output
+  # #   ansible.builtin.debug:
+  # #     msg: "{{ record_output }}"
+
+  # - name: create route53 record
+  #   amazon.aws.route53:
+  #     state: present
+  #     zone: "{{ hosted_zone }}"
+  #     record: "{{ item.item }}.{{ domain_name }}" # mongodb.daws86s.fun
+  #     type: A
+  #     ttl: 1
+  #     value: "{{ item.instances[0].private_ip_address }}"
+  #     overwrite: true
+  #   loop: "{{ ec2_output.results }}"
+
+  # # we are creating one record with public only for frontend
+  # - name: create route53 record for frontend
+  #   amazon.aws.route53:
+  #     state: present
+  #     zone: "{{ hosted_zone }}"
+  #     record: "{{ domain_name }}" # daws86s.fun
+  #     type: A
+  #     ttl: 1
+  #     value: "{{ item.instances[0].public_ip_address }}"
+  #     overwrite: true
+  #   when: item.item == "frontend"
+  #   loop: "{{ ec2_output.results }}"
+
 
     
 
