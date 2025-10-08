@@ -7,6 +7,7 @@
     instances:
     - mongodb
     - redis
+    - rabbitmq
     ami_id: ami-09c813fb71547fc4f
     sg: sg-084ef175a8b117541
     hosted_zone: Z03518071VI2MRRCQX1QH
