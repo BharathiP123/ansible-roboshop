@@ -33,7 +33,7 @@
     register: pub_output
       
   - name: print pub_output
-    ansible_builtin.debug:
+    ansible.builtin.debug:
       msg: " publicip: {{ pub_output }}"
 
   - name: print ip address
