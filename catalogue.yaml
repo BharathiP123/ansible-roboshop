@@ -33,9 +33,9 @@
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
       dest: /tmp/catalogue.zip 
 
-  - name: change directory
-    ansible.builtin.shell: 
-      chdir: /app
+  # - name: change directory
+  #   ansible.builtin.shell: 
+  #     chdir: /app
   
   - name: Extract foo.tgz into /var/lib/foo
     ansible.builtin.unarchive:
