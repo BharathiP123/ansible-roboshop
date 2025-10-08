@@ -26,6 +26,21 @@
     ansible.builtin.debug:
       msg: "{{ ec2_output }}"
 
+  - name: print public_ip
+    ansible.builtin.debug: 
+      msg: "{{ item.instances[0].public_ip_address }}"
+    loop: "{{ ec2_output.results }}"
+    register: pub_output
+      
+  - name: print pub_output
+    ansible_builtin.debug:
+      msg: " publicip: {{ pub_output }}"
+
+  - name: print ip address
+    ansible.builtin.debug: 
+      msg: "{{ item.instances[0].private_ip_address }}"
+    loop: "{{ ec2_output.results }}"
+
   # - name: route 53 record creation
   #   amazon.aws.route53:
   #     state: present
