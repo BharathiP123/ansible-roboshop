@@ -2,8 +2,8 @@
 - name: EC2 and Route 53
   hosts: local
   connection: local
-  #become: yes
-  #become_user: root
+  become: yes
+  become_user: root
   vars:
     instances:
     - mongodb
