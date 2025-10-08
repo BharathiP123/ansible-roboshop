@@ -23,10 +23,22 @@
       state: present
       home: /app
 
+  - name: remove app directory
+    ansible.builtin.file:
+      path: /app
+      state: absent
+
+
   - name: create a directory
     ansible.builtin.file:
       path: /app
       state: directory
+
+  - name: Delete catalogue file
+    ansible.builtin.file:
+      path: /tmp/catalogue.zip
+      state: absent
+
 
   - name: Download file to destination
     ansible.builtin.get_url:
@@ -37,15 +49,15 @@
   #   ansible.builtin.shell: 
   #     chdir: /app
   
-  - name: Extract foo.tgz into /var/lib/foo
+  - name: extract catalogue zip
     ansible.builtin.unarchive:
       dest: /app
       src: /tmp/catalogue.zip
       remote_src: yes
 
-  - name: change directory
-    ansible.builtin.shell: 
-      chdir: /app
+  # - name: change directory
+  #   ansible.builtin.shell: 
+  #     chdir: /app
 
   - name: npm install
     ansible.builtin.command: npm install
@@ -70,11 +82,11 @@
       state: present
 
   - name: connnect to mongodb catalogue
-    ansible.builtin.command: mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+    ansible.builtin.command: mongosh 172.31.1.252  --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
     register: catalogue_output
 
   - name: load products into mongodb
-    ansible.builtin.shell: mongosh --host mongodb.daws86s.fun </app/db/master-data.js
+    ansible.builtin.shell: mongosh --host 172.31.1.252 </app/db/master-data.js
     when: catalogue_output.stdout | int < 0
 
   - name: start the mongodb
