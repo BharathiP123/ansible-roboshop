@@ -41,6 +41,7 @@
     ansible.builtin.unarchive:
       src: tmp/catalogue.zip
       dest: /app
+      remote_src: yes
 
   - name: change directory
     ansible.builtin.shell: 
@@ -68,8 +69,13 @@
       name: mongodb-mongosh
       state: present
 
-  - name: loda the master data products to mongodb
-    ansible.builtin.shell: mongosh --host  172.31.1.252 </app/db/master-data.js
+  - name: connnect to mongodb catalogue
+    ansible.builtin.command: mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+    register: catalogue_output
+
+  - name: load products into mongodb
+    ansible.builtin.shell: mongosh --host mongodb.daws86s.fun </app/db/master-data.js
+    when: catalogue_output.stdout | int < 0
 
   - name: start the mongodb
     ansible.builtin.service:
