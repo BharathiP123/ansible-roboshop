@@ -5,7 +5,7 @@
   vars: 
   tasks:
   - name: install mongodb
-    ansible.builtin.dnf:
+    ansible.builtin.package:
       name: mongodb-org
       state: present
 
