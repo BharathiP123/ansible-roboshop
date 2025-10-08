@@ -60,7 +60,7 @@
   #     chdir: /app
 
   - name: npm install
-    ansible.builtin.command: npm install
+    ansible.builtin.shell: npm install
 
   - name: copy the catalogue service 
     ansible.builtin.copy:
