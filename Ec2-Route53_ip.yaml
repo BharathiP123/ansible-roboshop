@@ -44,7 +44,7 @@
   - name: route 53 record creation
     amazon.aws.route53:
       state: present
-      zone: {{ hosted_zone }}
+      zone: "{{ hosted_zone }}"
       record: "{{ item.item }}.{{ domain_name }}"
       type: A
       value: "{{ item.instances[0].private_ip_address }}"
