@@ -10,7 +10,7 @@
     ami_id: ami-09c813fb71547fc4f
     sg: sg-084ef175a8b117541
     hosted_zone: Z03518071VI2MRRCQX1QH
-    domain_name: bpotla.com
+    domain_name: "bpotla.com"
   tasks:
   - name: Launch the new t2.micro EC2 Instance
     amazon.aws.ec2_instance:
