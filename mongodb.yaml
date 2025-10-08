@@ -1,5 +1,5 @@
 ---
-- name: mongodb 
+- name: mongodb configuration 
   hosts: mongodb
   become: yes
   vars: 
@@ -15,10 +15,10 @@
       dest: /etc/yum.repos.d/mongo.repo
 
   - name: replace the file content on remote server
-    ansible.builtin.lineinfile:
+    ansible.builtin.replace:
       path: /etc/mongod.conf
       regexp: "127.0.0.1"
-      line: "0.0.0.0"
+      replace: "0.0.0.0"
 
   - name: start the mongodb
     ansible.builtin.service:
