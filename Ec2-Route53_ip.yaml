@@ -62,8 +62,8 @@
       value: "{{ item.instances[0].public_ip_address }}"
       ttl: 1
       overwrite: true
-  register: record_output
-  loop: "{{ ec2_output.results }}"
+    register: record_output
+    loop: "{{ ec2_output.results }}"
 
   - name: print record_output
     ansible.builtin.debug:
