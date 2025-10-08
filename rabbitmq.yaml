@@ -1,0 +1,30 @@
+---
+- name: rabbitmq configuration 
+  hosts: rabbitmq
+  become: yes
+  vars: 
+  tasks:
+ 
+  - name: copy mongorepo
+    ansible.builtin.copy:
+      src: rabbitmq.repo
+      dest: /etc/yum.repos.d/rabbitmq.repo
+
+  - name: install rabbitmq
+    ansible.builtin.package:
+      name: rabbitmq-server
+      state: present
+
+  - name: creating the user
+    ansible.builtin.command: rabbitmqctl add_user roboshop roboshop123
+
+  - name: changing the set_permissions
+    ansible.builtin.command: rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
+
+
+  - name: start the rabbitmq
+    ansible.builtin.service:
+      name: rabbitmq-server
+      state: started
+      enabled: yes
+
