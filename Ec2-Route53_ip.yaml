@@ -45,11 +45,25 @@
     amazon.aws.route53:
       state: present
       zone: "{{ hosted_zone }}"
-      record: "{{ item.item }}.{{domain_name}}"
+      record: "{{ item.item }}.{{ domain_name }}"
       type: A
+      value: "{{ item.instances[0].private_ip_address }}"
       ttl: 1
+      overwrite: true
     register: record_output
     loop: "{{ ec2_output.results }}"
+
+  - name: route 53 record creation for front end
+    amazon.aws.route53:
+      state: present
+      zone: "{{ hosted_zone }}"
+      record: "{{ item.item }}.{{ domain_name }}"
+      type: A
+      value: "{{ item.instances[0].public_ip_address }}"
+      ttl: 1
+      overwrite: true
+  register: record_output
+  loop: "{{ ec2_output.results }}"
 
   - name: print record_output
     ansible.builtin.debug:
