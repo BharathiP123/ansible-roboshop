@@ -4,15 +4,16 @@
   become: yes
   vars: 
   tasks:
-  - name: install mongodb
-    ansible.builtin.package:
-      name: mongodb-org
-      state: present
-
+ 
   - name: copy mongorepo
     ansible.builtin.copy:
       src: mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
+
+  - name: install mongodb
+    ansible.builtin.package:
+      name: mongodb-org
+      state: present
 
   - name: replace the file content on remote server
     ansible.builtin.replace:
