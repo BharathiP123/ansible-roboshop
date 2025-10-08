@@ -1,4 +1,3 @@
----
 - name: EC2 and Route 53
   hosts: local
   connection: local
@@ -9,7 +8,7 @@
     - mongodb
     ami_id: ami-09c813fb71547fc4f
     sg: sg-084ef175a8b117541
-    hosted_zone: "Z03518071VI2MRRCQX1QH"
+    hosted_zone: Z03518071VI2MRRCQX1QH
     domain_name: "bpotla.com"
   tasks:
   - name: Launch the new t2.micro EC2 Instance
@@ -73,7 +72,7 @@
   - name: create route53 record
     amazon.aws.route53:
       state: present
-      zone: "{{ hosted_zone }}"
+      zone: "{{ domain_name }}"
       record: "{{ item.item }}.{{ domain_name }}" # mongodb.daws86s.fun
       type: A
       ttl: 1
@@ -85,7 +84,7 @@
   - name: create route53 record for frontend
     amazon.aws.route53:
       state: present
-      zone: "{{ hosted_zone }}"
+      zone: "{{ domain_name }}"
       record: "{{ domain_name }}" # daws86s.fun
       type: A
       ttl: 1
