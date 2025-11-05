@@ -51,8 +51,8 @@
       remote_src: yes
 
   - name: node js install
-    community.genral.npm:
-      path: /app
+    community.general.npm:
+     path: /app
 
   - name: copy the cart service 
     ansible.builtin.copy:

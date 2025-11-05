@@ -50,7 +50,7 @@
       remote_src: yes
 
   - name: node js install
-    community.genral.npm:
+    community.general.npm:
       path: /app
 
   - name: copy the user service 
