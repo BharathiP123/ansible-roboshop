@@ -2,7 +2,6 @@
 - name: catalogue configuration
   hosts: catalogue
   become: yes
-  vars:
   tasks: 
   - name: disable default nodejs
     ansible.builtin.command: dnf module disable nodejs -y
@@ -20,15 +19,14 @@
       name: roboshop
       system: true
       shell: /sbin/nologin
-      state: present
       home: /app
-
+##Remove directory
   - name: remove app directory
     ansible.builtin.file:
       path: /app
       state: absent
 
-
+##create a dir
   - name: create a directory
     ansible.builtin.file:
       path: /app
@@ -44,10 +42,6 @@
     ansible.builtin.get_url:
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
       dest: /tmp/catalogue.zip 
-
-  # - name: change directory
-  #   ansible.builtin.shell: 
-  #     chdir: /app
   
   - name: extract catalogue zip
     ansible.builtin.unarchive:
@@ -55,28 +49,20 @@
       src: /tmp/catalogue.zip
       remote_src: yes
 
-  # - name: change directory
-  #   ansible.builtin.shell: 
-  #     chdir: /app
+  - name: node js install
+    community.genral.npm:
+      path: /app
 
-  - name: npm install
-    ansible.builtin.shell:  |
-      cd /app
-      npm install
-
-  - name: copy the catalogue service 
-    ansible.builtin.copy:
-      src: catalogue.service
-      dest: /etc/systemd/system/catalogue.service
-
-  - name: Reload systemd daemon
-    ansible.builtin.systemd_service:
-      daemon_reload: true
 
   - name: copy the mongo repo 
     ansible.builtin.copy:
       src: mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
+
+  - name: copy the catalogue service 
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
 
   - name: mongo client install
     ansible.builtin.package:
@@ -84,15 +70,27 @@
       state: present
 
   - name: connnect to mongodb catalogue
-    ansible.builtin.command: mongosh 172.31.1.252  --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+    ansible.builtin.command: mongosh mongodb.bpotla.com  --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
     register: catalogue_output
 
   - name: load products into mongodb
-    ansible.builtin.shell: mongosh --host 172.31.1.252 </app/db/master-data.js
-    when: catalogue_output.stdout | int < 0
+    ansible.builtin.shell: mongosh --host mongodb.bpotla.com </app/db/master-data.js
+    when: catalogue_output.stdout | int < 0 ##Catlogue_output.stdout value is "-1" . which is in string format ,when we keep the condition converting string to int
 
-  - name: start the mongodb
-    ansible.builtin.service:
+  # - name: start the mongodb
+  #   ansible.builtin.service:
+  #     name: catalogue
+  #     state: started
+  #     enabled: yes
+
+  # - name: Reload systemd daemon
+  #   ansible.builtin.systemd_service:
+  #     daemon_reload: true
+
+
+  - name: daemon reload enable and start
+    ansible.builtin.systemd_service:
       name: catalogue
+      enabled: true
       state: started
-      enabled: yes
+      daemon_reload: true
