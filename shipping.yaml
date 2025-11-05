@@ -1,16 +1,15 @@
----
-- name: shipping configuration
+- name: configure shipping server
   hosts: shipping
   become: yes
   tasks:
-  - name: maven install
-    ansible.builtin.package:
+  - name: install maven
+    ansible.builtin.dnf:
       name: "{{ item }}"
       state: present
     loop:
     - maven
     - mysql
-##install cryptography
+
   - name: install mysql python libraries
     ansible.builtin.pip:
       executable: pip3.9
@@ -22,6 +21,7 @@
   - name: create roboshop system user
     ansible.builtin.user:
       name: roboshop
+      comment: RoboShop System user
       system: true
       shell: /sbin/nologin
       home: /app
@@ -31,34 +31,26 @@
       path: /app
       state: absent
 
-  - name: create a directory
+  - name: create app directory
     ansible.builtin.file:
-      path: /app
       state: directory
+      path: /app
 
-  - name: Delete catalogue file
+  - name: Delete shipping file
     ansible.builtin.file:
-      path: /tmp/shipping-v3.zip 
+      path: /tmp/shipping.zip
       state: absent
 
-  - name: Download file to destination
+  - name: download shipping application
     ansible.builtin.get_url:
-      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip  
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
       dest: /tmp/shipping.zip
 
-  - name: extract catalogue zip
+  - name: extract shipping application
     ansible.builtin.unarchive:
-      dest: /app
       src: /tmp/shipping.zip
+      dest: /app
       remote_src: yes
-
-  # - name: mvn clean install
-  #   ansible.builtin.shell: |
-  #     cd /app 
-  #     mvn clean package 
-  #     mv target/shipping-1.0.jar shipping.jar
-
-  ##we can write abve command like below 
 
   - name: install dependencies
     ansible.builtin.command: mvn clean package
@@ -70,7 +62,7 @@
     args:
       chdir: /app
 
-  - name: copy the shipping service 
+  - name: copy shipping service
     ansible.builtin.copy:
       src: shipping.service
       dest: /etc/systemd/system/shipping.service
@@ -94,3 +86,5 @@
       enabled: true
       state: started
       daemon_reload: true
+
+  
