@@ -49,7 +49,7 @@
       src: /tmp/catalogue.zip
       remote_src: yes
 
-  - name: node js install
+  - name: install dependencies
     community.genral.npm:
       path: /app
 
