@@ -10,7 +10,7 @@
     - rabbitmq
     - mysql
     ami_id: ami-09c813fb71547fc4f
-    sg: sg-084ef175a8b117541
+    sg: sg-0cc20aa56d789dc6a
     hosted_zone: Z03518071VI2MRRCQX1QH
     domain_name: "bpotla.com"
   tasks:
